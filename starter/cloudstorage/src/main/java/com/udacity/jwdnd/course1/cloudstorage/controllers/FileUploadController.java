@@ -83,6 +83,7 @@ public class FileUploadController {
         try {
             Path filePath = Paths.get(uploadDirectory).resolve(filename);
             Resource resource = new UrlResource(filePath.toUri());
+            // comment out by ThanhTLN
             String contentType = fileUploadMapper.getContenttypeByFileName(filename);
 
             if (resource.exists() && resource.isReadable()) {

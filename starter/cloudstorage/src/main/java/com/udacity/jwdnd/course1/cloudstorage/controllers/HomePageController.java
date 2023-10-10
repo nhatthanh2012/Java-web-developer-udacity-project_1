@@ -37,9 +37,13 @@ public class HomePageController {
     @GetMapping(value = {"/", "/home"})
     // comment out by ThanhTLN
     public String getToHomePage(Model model) {
+        // get user info
         Users userLogin = userService.getUserInformation();
+        // get file list
         List<FileUploads> fileUploads = fileUploadMapper.getFileUpload(userLogin.getUserId());
+        // get note list
         List<Notes> notesList = notesMapper.getNotesList(userLogin.getUserId());
+        // get Credential list
         List<Credential> credentialList = credentialService.getAllCredential(userLogin.getUserId());
 
         model.addAttribute("fileUploads", fileUploads);

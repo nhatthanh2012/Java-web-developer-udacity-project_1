@@ -48,6 +48,7 @@ public class NotesController {
     public String deleteNote(@RequestParam String deleteId, Model model) {
         try {
             if(!deleteId.trim().isEmpty()) {
+                // delete note
                 notesMapper.deleteNote(deleteId);
                 model.addAttribute("successMessage", "Your note was deleted successfully");
             } else {
