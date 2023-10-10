@@ -1,10 +1,7 @@
 package com.udacity.jwdnd.course1.cloudstorage.mapper;
 
 import com.udacity.jwdnd.course1.cloudstorage.entities.FileUploads;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -15,7 +12,7 @@ public interface FileUploadMapper {
     List<FileUploads> getFileUpload(Integer userid);
 
     // delete file exist
-    @Select("DELETE FROM FILES WHERE fileId = #{deleteId}")
+    @Delete("DELETE FROM FILES WHERE fileId = #{deleteId}")
     void deleteFile(String deleteId);
 
     // get file name to delete
