@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -64,6 +65,11 @@ public class FileService {
     // comment out by ThanhTLN
     public void removeFileInFolder(String deleteId) {
         String fileName = fileUploadMapper.getFileName(deleteId);
+        // delete file
+        this.deleteFile(fileName);
+    }
+
+    public void deleteFile(String fileName) {
         // path to file to delete
         String filePath = "C:/FolderUploads/" + fileName;
         File fileToDelete = new File(filePath);

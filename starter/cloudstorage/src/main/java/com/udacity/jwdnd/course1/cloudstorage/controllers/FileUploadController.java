@@ -4,6 +4,7 @@ import com.udacity.jwdnd.course1.cloudstorage.mapper.FileUploadMapper;
 import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,26 +34,28 @@ public class FileUploadController {
     private FileUploadMapper fileUploadMapper;
 
     @PostMapping("/upload-file-on-system")
+    @Transactional
     public String uploadFileOnSystem(@RequestParam("fileUpload") MultipartFile file, Model model) {
-        if (!file.isEmpty()) {
-            try {
+        String newFileName = null;
+        try {
+            if (!file.isEmpty()) {
                 // create new name file (rules: current time + original file name)
-                String newFileName = System.currentTimeMillis() + "-" + file.getOriginalFilename();
+                newFileName = System.currentTimeMillis() + "-" + file.getOriginalFilename();
+                // save file to DB
+                fileService.saveNewFileToDb(file, newFileName);
+                // move file to saving folder
+                fileService.moveFileToPathSave(file, newFileName);
 
-                int newFileUpload = fileService.saveNewFileToDb(file, newFileName);
-                if(newFileUpload == 1) {
-                    fileService.moveFileToPathSave(file, newFileName);
-                    model.addAttribute("successMessage", "File uploaded successfully.");
-                } else {
-                    model.addAttribute("errorMessage", "Error uploading the file.");
-                }
-            } catch (IOException e) {
-                model.addAttribute("errorMessage", e.getMessage());
+                model.addAttribute("successMessage", "File uploaded successfully.");
+            } else {
+                model.addAttribute("errorMessage", "Please select a file to upload.");
             }
-        } else {
-            model.addAttribute("errorMessage", "Please select a file to upload.");
+        } catch (IOException e) {
+            // if error, rollback data in DB
+            // delete file upload
+            fileService.deleteFile(newFileName);
+            model.addAttribute("errorMessage", "Error when uploading file");
         }
-
         // after upload file, come back to result.html page
         return "result";
     }

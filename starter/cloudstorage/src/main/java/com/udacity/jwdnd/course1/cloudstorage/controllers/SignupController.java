@@ -45,6 +45,6 @@ public class SignupController {
             model.addAttribute("signupErrorMsg", signupErrorMsg);
         }
 
-        return "signup"; // "redirect:/signup";
+        return "redirect:/login";
     }
 }
